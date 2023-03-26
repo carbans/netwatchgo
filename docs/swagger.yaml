@@ -1,0 +1,53 @@
+definitions:
+  types.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  types.LoginResponseType:
+    properties:
+      token:
+        type: string
+    type: object
+  types.LoginType:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user and returns authentication token.
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: loginType
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: return token
+          schema:
+            $ref: '#/definitions/types.LoginResponseType'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+      summary: Logs in a user
+      tags:
+      - user
+swagger: "2.0"
