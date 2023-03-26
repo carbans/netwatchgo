@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"github.com/carbans/netdebug/types"
+	"github.com/carbans/netdebug/utils/token"
+	"gorm.io/gorm"
+)
 
 type ApiKey struct {
 	gorm.Model
@@ -9,17 +13,34 @@ type ApiKey struct {
 	UserId uint   `gorm:"not null"`
 }
 
-func CreateApiKey(key ApiKey) (ApiKey, error) {
-	var err = DB.Create(&key).Error
+func CreateApiKey(key types.CreateApiKeyInput, user_id uint) (ApiKey, error) {
+
+	secret, e := token.GenerateToken(user_id)
+
+	if e != nil {
+		return ApiKey{}, e
+	}
+
+	apikey := ApiKey{Key: key.Key, Secret: secret, UserId: user_id}
+	var err = DB.Create(&apikey).Error
+	if err != nil {
+		return ApiKey{}, err
+	}
+	return apikey, nil
+}
+
+func GetApiKeyById(id uint) (ApiKey, error) {
+	var key ApiKey
+	var err = DB.First(&key, id).Error
 	if err != nil {
 		return key, err
 	}
 	return key, nil
 }
 
-func GetApiKeyById(id uint) (ApiKey, error) {
+func GetApiKeyByUserId(userId uint) (ApiKey, error) {
 	var key ApiKey
-	var err = DB.First(&key, id).Error
+	var err = DB.Where("user_id = ?", userId).First(&key).Error
 	if err != nil {
 		return key, err
 	}

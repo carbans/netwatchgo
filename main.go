@@ -31,9 +31,11 @@ func main() {
 
 	// Routes
 	v1 := r.Group("/v1")
+	docs.SwaggerInfo.BasePath = "/v1"
 	routers.UserRoute(v1)
 	v1.Use(middlewares.JwtAuthMiddleware())
 	routers.AgentRoute(v1)
+	routers.ApiKeyRoute(v1)
 
 	r.LoadHTMLGlob("./public/html/*")
 	r.Static("/public", "./public")

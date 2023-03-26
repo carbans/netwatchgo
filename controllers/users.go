@@ -19,6 +19,16 @@ type LoginInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// Register registers a user
+// @Summary Registers a user
+// @Description Registers a user.
+// @Accept json
+// @Produce json
+// @Tags user
+// @Param register body RegisterInput true "Register Credentials"
+// @Success 200
+// @Failure 400 {object} types.ErrorResponse
+// @Router /register [post]
 func Register(c *gin.Context) {
 
 	var input RegisterInput
